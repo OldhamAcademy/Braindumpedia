@@ -92,3 +92,26 @@ Copy that output and paste it to the user that you created the account for. Tell
 ```
 cat awspass.txt | base64 --decode | keybase pgp decrypt
 ```
+
+## More Stuff
+Do you want to get IAM access key id and secret? 
+(If you're creating a service account and you don't need a login profile, you should add this step too).
+```nginx
+resource "aws_iam_access_key" "alanl" {
+  user    = "${aws_iam_user.alanl.name}"
+  pgp_key = "keybase:alanlee"
+}
+```
+
+Then add the following outputs to file:
+```nginx
+output "id" {
+  value = "${aws_iam_access_key.alanl.id}"
+}
+
+output "secret" {
+  value = "${aws_iam_access_key.alanl.encrypted_secret}"
+}
+```
+
+The secret is encrypted, which would require the user to run the base64 and keybase decryption just like they would have had for password.
